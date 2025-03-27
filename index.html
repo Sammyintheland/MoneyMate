@@ -562,21 +562,7 @@ function showSection(sectionId) {
     }
 }
 
-// Ensure videoContainer is displayed only when accessing videos
-function toggleVideos() {
-    var videoSection = document.getElementById("videoContainer");
-    if (videoSection.style.display === "none" || videoSection.style.display === "") {
-        videoSection.style.display = "block"; // Show video container
-    } else {
-        videoSection.style.display = "none"; // Hide video container
-    }
-}
 
-
-
-
-
-let loggedIn = localStorage.getItem("username") !== null;
 
 window.onload = function() {
     showSection('home'); // Show home section on load
