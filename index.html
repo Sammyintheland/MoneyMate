@@ -546,21 +546,7 @@ function checkLoginStatus(sectionId) {
 
 
 
-// Ensure the videos are shown while logged in
-function showSection(sectionId) {
-    document.querySelectorAll('section').forEach((section) => {
-        section.style.display = 'none'; // Hide all sections
-    });
 
-    document.getElementById(sectionId).style.display = 'block'; // Show requested section
-
-    // Handle specific display logic for video section
-    if (sectionId === 'video') {
-        document.querySelector('.video-tutorials').style.display = 'block'; // Show video tutorials
-    } else {
-        document.querySelector('.video-tutorials').style.display = 'none'; // Hide video tutorials in other sections
-    }
-}
 
 
 
