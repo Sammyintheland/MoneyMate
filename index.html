@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -238,7 +240,6 @@
             <li><button onclick="showTool('budgetCalculator')">Budget Calculator</button></li>
             <li><button onclick="showTool('expenseTracker')">Expense Tracking</button></li>
             <li><button onclick="showTool('investmentTracker')">Investment Portfolio Tracker</button></li>
-            <li><button onclick="showTool('stockMarketInsights')">Real-Time Stock Market Insights</button></li>
             <li><button onclick="showTool('currencyConverter')">Currency Converter</button></li>
             <li><button onclick="showTool('financialGoalPlanner')">Financial Goal Planner</button></li>
         </ul>
@@ -510,18 +511,24 @@
         <div class="video-tutorials">
             <h3>Watch these videos to increase your financial knowledge</h3>
             <div id="videoContainer" class="video-container" style="display: none;">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/aRcXutXvfmM" frameborder="0" allowfullscreen></iframe>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/1w_SM2RXTWA?si=e8k9hDnB61d26wsY" frameborder="0" allowfullscreen></iframe>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/pZNnueqfj_A?si=aCm6tPORMW9n9vx0" frameborder="0" allowfullscreen></iframe>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/7i6mPvBv488?si=pbVl0zoQLGvQx49F" frameborder="0" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/aRcXutXvfmM?si=V6RnZRuTe4OUXX7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/1w_SM2RXTWA?si=bu22ugv-9GJRA21_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/pZNnueqfj_A?si=LQQhJ77un6dmR8YS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7i6mPvBv488?si=7sRt4RgFG1sCm3zb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
         </div>
-    </section>
+
+        
+ </section>
     
 
 
 
     <script>
+
 
 
 // Place this in your existing JavaScript code
@@ -602,14 +609,6 @@ function loginUser() {
 
 
        
-        function toggleVideos() {
-            var videoSection = document.getElementById("videoContainer");
-            if (videoSection.style.display === "none" || videoSection.style.display === "") {
-                videoSection.style.display = "block";
-            } else {
-                videoSection.style.display = "none";
-            }
-        }
 
 
 function openSignupModal() {
@@ -736,12 +735,24 @@ function openSignupModal() {
         }
 
         function showSection(sectionId) {
-            document.getElementById("home").style.display = "none";
-            document.getElementById("dashboard").style.display = "none";
-            document.getElementById("tools").style.display = "none";
-            document.getElementById("video").style.display = "none";
-            document.getElementById(sectionId).style.display = "block";
-        }
+    // Hide all sections
+    document.getElementById("home").style.display = "none";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("tools").style.display = "none";
+    document.getElementById("video").style.display = "none"; // Hide video section
+    
+    // Reset videoContainer visibility
+    document.getElementById("videoContainer").style.display = "none"; // Hide the video container initially
+
+    // Show the requested section
+    document.getElementById(sectionId).style.display = "block";
+
+    // If the video section is displayed, show the video container
+    if (sectionId === 'video') {
+        document.getElementById("videoContainer").style.display = "block"; // Show the video container
+    }
+}
+        
 
   
         function showTool(toolId) { 
@@ -899,11 +910,21 @@ function clearVal() {
 
         
 
-        function setFinancialGoal() {
+function setFinancialGoal() {
             let goal = document.getElementById("goal").value;
             let goalAmount = document.getElementById("goalAmount").value;
-            document.getElementById("goalStatus").innerText = `Goal set: ${goal} of $${goalAmount}`;
+
+            if (goal && goalAmount && !isNaN(goalAmount)) {
+                document.getElementById("goalStatus").innerText = `Goal set: ${goal} of $${parseFloat(goalAmount).toFixed(2)}`;
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please enter a valid financial goal and amount.',
+                    icon: 'error'
+                });
+            }
         }
+        
 
 
 
