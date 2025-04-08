@@ -1,0 +1,1564 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyMate</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+    body {
+        font-family: Helvetica, sans-serif, ;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+    }
+    
+    .theme-light {
+        --color-primary: #0060df;
+        --color-secondary: #fbfbfe;
+        --color-accent: #fd6f53;
+        --font-color: #000000;
+    }
+    
+    .theme-dark {
+        --color-primary: #17ed90;
+        --color-secondary: #2a2c2d;
+        --color-accent: #12cdea;
+        --font-color: #ffffff;
+    }
+    
+    .container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        background: var(--color-secondary);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .container h1 {
+        color: var(--font-color);
+        font-family: sans-serif;
+    }
+    
+    .container button {
+        color: var(--font-color);
+        background: var(--color-primary);
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 5px;
+    }
+    
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 40px;
+        width: 40px;
+        left: 0px;
+        bottom: 4px;
+        top: 0;
+        bottom: 0;
+        margin: auto 0;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+        box-shadow: 0 0px 15px #2020203d;
+        background: white url('https://i.ibb.co/FxzBYR9/night.png');
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    
+    input:checked + .slider {
+        background-color: #2196f3;
+    }
+    
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196f3;
+    }
+    
+    input:checked + .slider:before {
+        -webkit-transform: translateX(24px);
+        -ms-transform: translateX(24px);
+        transform: translateX(24px);
+        background: white url('https://i.ibb.co/7JfqXxB/sunny.png');
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+    
+    .slider.round {
+        border-radius: 34px;
+    }
+    
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    
+    header {
+        background: rgb(37, 124, 2);
+        background: linear-gradient(90deg, rgb(255, 255, 255) 0%, rgba(36,146,2,1) 43%, rgba(35,168,2,1) 67%, rgba(33,210,1,1) 100%);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        position: relative;
+    }
+    
+    nav ul {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+    }
+    
+    nav ul li {
+        display: inline;
+        margin: 0 15px;
+    }
+    
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .login-container {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+    }
+    
+    .user-name {
+        display: none;
+        color: white;
+        font-weight: bold;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+    
+    section {
+        padding: 20px;
+        margin: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    button {
+        background-color: #352e83;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+    }
+    
+    button:hover {
+        background-color: #005ecb;
+    }
+    
+    input {
+        padding: 10px;
+        margin: 5px 0;
+        width: calc(100% - 22px);
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+    
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 30%;
+        text-align: center;
+    }
+    
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .video-tutorials {
+        margin-top: 20px;
+    }
+    
+    iframe {
+        border: none;
+    }
+    
+    .tool-container {
+        display: none;
+        margin-top: 20px;
+    }
+    
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-top: 10px;
+    }
+    
+    .summary {
+        background: white;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .chart-section {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    form {
+        margin-bottom: 2rem;
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    form label {
+        display: block;
+        margin: 0.5rem 0;
+    }
+    
+    form input {
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    form button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    form button:hover {
+        background-color: #45a049;
+    }
+    
+    #stock-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+    }
+    
+    #stockContainer label {
+        font-weight: bold;
+    }
+    
+    #stockInfo {
+        margin-top: 1rem;
+    }
+    
+    #stockInfo p {
+        margin: 0.5rem 0;
+    }
+    
+    .tool-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .tool-list button {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .financial-image {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+    
+    table th, table td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    
+    table th {
+        background-color: #f2f2f2;
+    }
+    
+    .profit {
+        color: green;
+    }
+    
+    .loss {
+        color: red;
+    }
+    </style>
+</head>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<body>
+    <header>
+        <h1>Welcome to MoneyMate</h1>
+        <nav>
+            <ul>
+                <li><a href="#home" onclick="showSection('home')">Home</a></li>
+                <li><a href="#" onclick="checkLoginStatus('dashboard')">Dashboard</a></li>
+                <li><a href="#" onclick="checkLoginStatus('tools')">Tools</a></li>
+                <li><a href="#" onclick="checkLoginStatus('video')">Video Tutorials</a></li>
+            </ul>
+        </nav>
+        
+        <div class="login-container">
+            <span id="user-name" class="user-name" onclick="confirmGoToProfile()"></span>            
+            <button id="login-button" onclick="openModal()">Login</button>
+            <button id="signup-button" onclick="openSignupModal()">Sign Up</button>
+            <button id="sign-out-button" style="display: none;" onclick="signOut()">Sign Out</button>
+        </div>
+    </header>
+    
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="loginUser()">Login</button>
+            <div id="g_id_onload"
+                data-client_id="39795124044-mrahe2vu8mt2bd9ui1p7aspicbave0j6.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleGoogleLogin"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+            <p>
+                <a href="#" onclick="openPasswordRecovery()">Forgot Password?</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSignupModal()">&times;</span>
+            <h2>Sign Up</h2>
+            <input type="text" id="signup-username" placeholder="Enter a username">
+            <input type="password" id="signup-password" placeholder="Enter a password">
+            <button onclick="signupUser()">Sign Up</button>
+            <div id="g_id_onload"
+                data-client_id="39795124044-mrahe2vu8mt2bd9ui1p7aspicbave0j6.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleGoogleLogin"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard"></div>
+        </div>
+    </div>
+
+    <div id="passwordRecoveryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePasswordRecoveryModal()">&times;</span>
+            <h2>Password Recovery</h2>
+            <input type="email" id="recoveryEmail" placeholder="Enter your email">
+            <button onclick="sendPasswordReset()">Send Reset Link</button>
+        </div>
+    </div>
+
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeResetPasswordModal()">&times;</span>
+            <h2>Reset Password</h2>
+            <input type="password" id="new-password" placeholder="New Password" required>
+            <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+            <button onclick="resetPassword()">Reset Password</button>
+            <p><a href="#" onclick="showLoginModal()">Back to Login</a></p>
+        </div>
+    </div>
+
+    <div id="profileManagement" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfileManagement()">&times;</span>
+            <h2>User Profile</h2>
+            <input type="text" id="profile-username" placeholder="Username">
+            <input type="email" id="profile-email" placeholder="Email">
+            <input type="password" id="profile-password" placeholder="New Password (Leave blank to keep current)">
+            <p class="preview"></p>
+            <button onclick="updateProfile()">Update Profile</button>
+            
+            <h3>Theme Switcher</h3>
+            <label id="switch" class="switch">
+                <input type="checkbox" onchange="toggleTheme()" id="slider">
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+
+    <section id="home">
+        <h2>Your Personal Finance Buddy</h2>
+        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?fit=fillmax&h=500&w=800" alt="Person planning finances" class="financial-image">
+        <p>Manage your budget, track expenses, and make smarter investments with MoneyMate.</p>
+    </section>
+
+    <section id="dashboard" style="display: none;">
+        <h2>Dashboard</h2>
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?fit=fillmax&h=500&w=800" alt="Financial analytics dashboard" class="financial-image">
+        <p>Overview of your financial status.</p>
+        <label for="incomeInput">Monthly Income: </label>
+        <input type="number" id="incomeInput" value="5000"><br>
+        
+        <label for="expensesInput">Monthly Expenses: </label>
+        <input type="number" id="expensesInput" value="3200"><br>
+        
+        <h2>Spending Breakdown:</h2>
+        <label for="spendingInput">Enter your spending categories (comma-separated): </label>
+        <input type="text" id="spendingInput" value="Rent,Food,Utilities,Entertainment,Savings"><br>
+    
+        <label for="amountInput">Enter your respective amounts (comma-separated): </label>
+        <input type="text" id="amountInput" value="1200,600,400,500,500"><br>
+    
+        <button id="updateButton">Update Dashboard</button>
+    
+        <h2>Summary</h2>
+        <p>Income: <span id="income"></span></p>
+        <p>Expenses: <span id="expenses"></span></p>
+        <p>Balance: <span id="balance"></span></p>
+    
+        <h2>Spending Chart</h2>
+        <canvas id="spendingChart" width="400" height="200"></canvas>
+    </div>
+      
+        <section class="chart-section">
+            <h2>Spending Breakdown</h2>
+            <canvas id="spendingChart" width="400" height="200"></canvas>
+        </section>
+        <div id="finance-summary"></div>
+    </section>
+
+    <section id="tools" style="display: none;">
+        <h2>Financial Tools</h2>
+        <img src="https://images.unsplash.com/photo-1434626881859-194d67b2b86f?fit=fillmax&h=500&w=800" alt="Person using financial tools" class="financial-image">
+        
+        <div class="tool-list">
+            <button class="tool-button" onclick="showTool('budgetCalculator')">Budget Calculator</button>
+            <button class="tool-button" onclick="showTool('expenseTracker')">Expense Tracking</button>
+            <button class="tool-button" onclick="showTool('investmentTracker')">Investment Portfolio</button>
+            <button class="tool-button" onclick="showTool('stockMarketInsights')">Stock Market Insights</button>
+            <button class="tool-button" onclick="showTool('currencyConverter')">Currency Converter</button>
+            <button class="tool-button" onclick="showTool('financialGoalPlanner')">Goal Planner</button>
+        </div>
+
+        <div id="budgetCalculator" class="tool-container">
+            <h3>Budget Calculator</h3>
+            <label for="budgetIncome">Total Income:</label>
+            <input type="number" id="budgetIncome" placeholder="Enter your total income" required>
+            <label for="budgetExpenses">Total Expenses:</label>
+            <input type="number" id="budgetExpenses" placeholder="Enter your total expenses" required>
+            <button onclick="calculateBudget()">Calculate Budget</button>
+            <div id="budgetResults" style="margin-top: 20px;">
+                <h4>Budget Breakdown</h4>
+                <p id="needs"></p>
+                <p id="wants"></p>
+                <p id="savings"></p>
+                <p id="summary"></p>
+                <p id="budgetResult"></p>
+            </div>
+        </div>
+
+        <div id="expenseTracker" class="tool-container">
+            <h3>Expense Tracker</h3>
+            <section>
+                <h4>Necessities</h4>
+                <label>Mortgage or Rent</label>
+                <input type="number" id="mortgageRentAmount" placeholder="Amount">
+                <label>Utilities</label>
+                <input type="number" id="utilitiesAmount" placeholder="Amount">
+                <label>Food and Drink</label>
+                <input type="number" id="foodDrinkAmount" placeholder="Amount">
+                <label>Clothing and Laundry</label>
+                <input type="number" id="clothingAmount" placeholder="Amount">
+                <label>Household Maintenance</label>
+                <input type="number" id="householdMaintenanceAmount" placeholder="Amount">
+                <label>Car Expenses (gas, repairs, etc.)</label>
+                <input type="number" id="carExpensesAmount" placeholder="Amount">
+            </section>
+
+            <section>
+                <h4>Personal</h4>
+                <label>Personal Expenses</label>
+                <input type="number" id="personalExpensesAmount" placeholder="Amount">
+            </section>
+
+            <section>
+                <h4>Debts & Loans</h4>
+                <label>Debt & Loans</label>
+                <input type="number" id="debtsLoansAmount" placeholder="Amount">
+            </section>
+
+            <section>
+                <h4>Insurance</h4>
+                <label>Insurance</label>
+                <input type="number" id="insuranceAmount" placeholder="Amount">
+            </section>
+
+            <section>
+                <h4>Taxes</h4>
+                <label>Taxes</label>
+                <input type="number" id="taxesAmount" placeholder="Amount">
+            </section>
+
+            <section>
+                <h4>Other</h4>
+                <label>Other Expenses</label>
+                <input type="number" id="otherExpensesAmount" placeholder="Amount">
+            </section>
+
+            <button onclick="calculateExpenses()">Calculate Total Expenses</button>
+            <div id="totalExpenses">Total Expenses: $0.00</div>
+            <div id="expenseResults" style="margin-top: 20px; font-weight: bold;"></div>
+        </div>
+
+        <div id="investmentTracker" class="tool-container">
+            <h3>Investment Portfolio Tracker</h3>
+            <section class="portfolio">
+                <form id="addInvestmentForm">
+                    <label for="asset">Asset:</label>
+                    <input type="text" id="asset" required />
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" required />
+                    <label for="buyPrice">Buy Price:</label>
+                    <input type="number" id="buyPrice" step="0.01" required />
+                    <button type="submit">Add Investment</button>
+                </form>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asset</th>
+                            <th>Quantity</th>
+                            <th>Buy Price</th>
+                            <th>Current Price</th>
+                            <th>Value</th>
+                            <th>Profit/Loss</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portfolioTable">
+                        <!-- Rows will be populated dynamically -->
+                    </tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="stockMarketInsights" class="tool-container">
+            <h3>Real-Time Stock Market Insights</h3>
+            <p>This tool provides live stock prices.</p>
+            <div id="stock-container">
+                <label for="stockSymbol">Enter Stock Symbol (e.g., AAPL, GOOGL): </label>
+                <input type="text" id="stockSymbol" placeholder="AAPL" />
+                <button id="getStockPrice">Get Stock Price</button>
+                <div id="stockInfo">
+                    <p><strong>Stock Name:</strong> <span id="stockName"></span></p>
+                    <p><strong>Current Price:</strong> $<span id="stockPrice"></span></p>
+                    <p><strong>Time of Update:</strong> <span id="lastUpdated"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="currencyConverter" class="tool-container">
+            <h3>Currency Converter</h3>
+            <div class="container">
+                <div class="main">
+                    <div class="form-group">
+                        <label for="oamount">Amount to Convert:</label>
+                        <input type="text" class="form-control searchBox" placeholder="0.00" id="oamount">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">From</span>
+                                </div>
+                                <select class="form-control from" id="sel1">
+                                    <option value="">Select One …</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="CAD">CAD</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="CNY">CNY</option>
+                                    <option value="INR">INR</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">To</span>
+                                </div>
+                                <select class="form-control to" id="sel2">
+                                    <option value="">Select One …</option>
+                                    <option value="USD">USD</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="CAD">CAD</option>
+                                    <option value="AUD">AUD</option>
+                                    <option value="CNY">CNY</option>
+                                    <option value="INR">INR</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-primary convert m-2" type="button" id="convertBtn">Convert</button>
+                        <button class="btn btn-primary m-2" onclick="clearVal()">Reset</button>
+                    </div>
+                </div>
+                <div id="finalAmount" class="text-center" style="display:none;">
+                    <h2>Converted Amount: <span class="finalValue" style="color:green;"></span></h2>
+                </div>
+            </div>
+        </div>
+
+        <div id="financialGoalPlanner" class="tool-container">
+            <h3>Financial Goal Planner</h3>
+            <input type="text" id="goal" placeholder="Enter your financial goal">
+            <input type="text" id="goalAmount" placeholder="Goal Amount">
+            <button onclick="setFinancialGoal()">Set Goal</button>
+            <p id="goalStatus"></p>
+        </div>
+    </section>
+
+    <section id="video" style="display: none;">
+        <h2>Video Tutorials</h2>
+        <div class="video-tutorials">
+            <h3>Watch these videos to increase your financial knowledge</h3>
+            <div id="videoContainer" class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/aRcXutXvfmM?si=V6RnZRuTe4OUXX7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/1w_SM2RXTWA?si=bu22ugv-9GJRA21_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/pZNnueqfj_A?si=LQQhJ77un6dmR8YS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7i6mPvBv488?si=7sRt4RgFG1sCm3zb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
+    
+
+
+
+    <script>
+
+
+
+document.getElementById('updateButton').addEventListener('click', updateDashboard);
+
+function updateDashboard() {
+    const income = parseFloat(document.getElementById('incomeInput').value);
+    const expenses = parseFloat(document.getElementById('expensesInput').value);
+    
+    document.getElementById('income').textContent = income.toFixed(2);
+    document.getElementById('expenses').textContent = expenses.toFixed(2);
+    document.getElementById('balance').textContent = (income - expenses).toFixed(2);
+
+    const spendingLabels = document.getElementById('spendingInput').value.split(',').map(label => label.trim());
+    const spendingAmounts = document.getElementById('amountInput').value.split(',').map(amount => parseFloat(amount.trim()));
+
+    updateChart(spendingLabels, spendingAmounts);
+}
+
+let chart;
+function updateChart(labels, data) {
+    const ctx = document.getElementById('spendingChart').getContext('2d');
+    
+    if (chart) {
+        chart.destroy(); // Destroy previous chart instance if it exists
+    }
+  
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Expenses',
+                data: data,
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: true, text: 'Monthly Expenses' }
+            }
+        }
+    });
+}
+
+// Initial update
+updateDashboard();
+
+
+
+ // function to set a given theme/color-scheme
+ function setTheme(themeName) {
+            localStorage.setItem('theme', themeName);
+            document.documentElement.className = themeName;
+        }
+
+        // function to toggle between light and dark theme
+        function toggleTheme() {
+            if (localStorage.getItem('theme') === 'theme-dark') {
+                setTheme('theme-light');
+            } else {
+                setTheme('theme-dark');
+            }
+        }
+
+        // Immediately invoked function to set the theme on initial load
+        (function () {
+            if (localStorage.getItem('theme') === 'theme-dark') {
+                setTheme('theme-dark');
+                document.getElementById('slider').checked = false;
+            } else {
+                setTheme('theme-light');
+              document.getElementById('slider').checked = true;
+            }
+        })();
+
+
+// Place this in your existing JavaScript code
+
+function checkLoginStatus(sectionId) {
+    // Refresh loggedIn state from localStorage
+    loggedIn = localStorage.getItem("username") !== null;
+
+    if (!loggedIn) {
+        Swal.fire({
+            title: 'You need to log in or sign up',
+            text: 'Please log in or sign up to access this content.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            openModal(); // Open login modal if not logged in
+        });
+    } else {
+        showSection(sectionId); // Show the section if logged in
+        }
+    }
+
+
+
+
+
+
+
+    window.onload = function() {
+    updateUI(); // Ensure UI reflects login state
+};
+
+function updateUI() {
+    const storedUsername = localStorage.getItem("username");
+    if (storedUsername) {
+        document.getElementById("user-name").innerText = storedUsername;
+        document.getElementById("user-name").style.display = "inline";
+        document.getElementById("login-button").style.display = "none"; 
+        document.getElementById("signup-button").style.display = "none"; // Also hide sign up button
+        document.getElementById("sign-out-button").style.display = "inline"; 
+    } else {
+        document.getElementById("user-name").style.display = "none";
+        document.getElementById("login-button").style.display = "inline"; 
+        document.getElementById("signup-button").style.display = "inline"; // Ensure it's visible if logged out
+        document.getElementById("sign-out-button").style.display = "none"; 
+    }
+}
+
+
+
+// Update the loginUser function
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username && password) {
+        localStorage.setItem("username", username);
+        // In a real application, validate credentials here
+
+        Swal.fire({
+            title: 'Login Successful!',
+            text: `Welcome back, ${username}!`,
+            icon: 'success'
+        }).then(() => {
+            loggedIn = true; // Update logged-in state
+            updateUI(); // Update UI
+
+            // Hiding the sign-up button
+            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+            
+            closeModal();
+            showSection('home'); // Optionally redirect to home
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please enter both username and password.',
+            icon: 'error'
+        });
+    }
+}
+
+
+       
+
+
+function openSignupModal() {
+        document.getElementById("signupModal").style.display = "block";
+    }
+
+    function closeSignupModal() {
+        document.getElementById("signupModal").style.display = "none";
+    }
+
+
+
+
+    function signupUser() {
+    let username = document.getElementById("signup-username").value;
+    let password = document.getElementById("signup-password").value;
+
+    if (username && password) {
+        // Save to local storage
+        localStorage.setItem("username", username);
+        localStorage.setItem("password", password);
+
+        Swal.fire({
+            title: "Sign Up Successful!",
+            text: `Welcome, ${username}! You are now logged in.`,
+            icon: "success"
+        }).then(() => {
+            // Update the UI
+            document.getElementById("user-name").innerText = username;
+            document.getElementById("user-name").style.display = "inline";
+            document.getElementById("login-button").style.display = "none"; // Hide login button
+            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+            document.getElementById("sign-out-button").style.display = "inline"; // Show sign out button
+
+            closeSignupModal();
+            showSection('home'); // Optionally redirect to home
+        });
+    } else {
+        Swal.fire("Error", "Please enter a username and password.", "error");
+    }
+}
+
+function loginUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (username && password) {
+        // Save to local storage
+        localStorage.setItem("username", username);
+        
+        Swal.fire({
+            title: 'Login Successful!',
+            text: `Welcome back, ${username}!`,
+            icon: 'success'
+        }).then(() => {
+            // Update the UI
+            document.getElementById("user-name").innerText = username;
+            document.getElementById("user-name").style.display = "inline";
+            document.getElementById("login-button").style.display = "none"; // Hide login button
+            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+            document.getElementById("sign-out-button").style.display = "inline"; // Show sign-out button
+            
+            closeModal(); // Close the login modal
+            showSection('home'); // Redirect to home or any other section
+        });
+    } else {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please enter both username and password.',
+            icon: 'error'
+        });
+    }
+}
+
+function signupUser() {
+    let username = document.getElementById("signup-username").value;
+    let password = document.getElementById("signup-password").value;
+
+    if (username && password) {
+        // Save to local storage
+        localStorage.setItem("username", username);
+        
+        Swal.fire({
+            title: "Sign Up Successful!",
+            text: `Welcome, ${username}! You are now logged in.`,
+            icon: "success"
+        }).then(() => {
+            // Update the UI
+            document.getElementById("user-name").innerText = username;
+            document.getElementById("user-name").style.display = "inline";
+            document.getElementById("login-button").style.display = "none"; // Hide login button
+            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+            document.getElementById("sign-out-button").style.display = "inline"; // Show sign-out button
+            
+            closeSignupModal(); // Close the signup modal
+            showSection('home'); // Redirect to home or any other section
+        });
+    } else {
+        Swal.fire("Error", "Please enter a username and password.", "error");
+    }
+}
+
+
+    function handleGoogleLogin(response) {
+    const credential = response.credential; // Encoded JWT token
+
+    // Decode JWT to extract user information
+    const userInfo = JSON.parse(atob(credential.split('.')[1]));
+    
+    // Save user info in local storage or use it for authentication
+    localStorage.setItem("username", userInfo.name);
+    localStorage.setItem("email", userInfo.email);
+    localStorage.setItem("profilePic", userInfo.picture);
+
+    // Update UI
+    document.getElementById("user-name").innerText = userInfo.name;
+    document.getElementById("user-name").style.display = "inline";
+    document.getElementById("login-button").style.display = "none";
+    document.getElementById("sign-out-button").style.display = "inline";
+
+    Swal.fire({
+        title: 'Login Successful!',
+        text: `Welcome, ${userInfo.name}!`,
+        imageUrl: userInfo.picture,
+        imageWidth: 100,
+        imageHeight: 100,
+        icon: 'success'
+    });
+}
+
+
+
+
+        const profilePicDisplay = document.querySelector('.preview');
+
+    window.onload = function() {
+    const storedUsername = localStorage.getItem("username");
+    const storedEmail = localStorage.getItem("email");
+    const storedProfilePic = localStorage.getItem("profilePic");
+
+    if (storedUsername) {
+        document.getElementById("user-name").innerText = storedUsername;
+        document.getElementById("user-name").style.display = "inline";
+        document.getElementById("login-button").style.display = "none";
+        document.getElementById("sign-out-button").style.display = "inline";
+
+        if (storedProfilePic) {
+            profilePicDisplay.innerHTML = `<img src="${storedProfilePic}" class="profile-pic" alt="Profile Picture">`;
+        }
+    }
+};
+
+        function confirmGoToProfile() {
+            Swal.fire({
+                title: "Go to your Profile?",
+                text: "Do you want to visit your profile?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    promptProfilePictureUpload(); 
+                }
+            });
+        }
+
+        async function promptProfilePictureUpload() {
+            const { value: file } = await Swal.fire({
+                title: "Select image",
+                input: "file",
+                inputAttributes: {
+                    accept: "image/*",
+                    "aria-label": "Upload your profile picture"
+                }
+            });
+    
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicDisplay.innerHTML = `<img src="${e.target.result}" class="profile-pic" alt="Profile Picture">`;
+                };
+                reader.readAsDataURL(file);
+            }
+            openProfileManagement(); 
+        }
+
+
+
+        function showSection(sectionId) {
+    // Hide all sections
+    document.getElementById("home").style.display = "none";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("tools").style.display = "none";
+    document.getElementById("video").style.display = "none"; // Hide video section
+    
+    // Reset videoContainer visibility
+    document.getElementById("videoContainer").style.display = "none"; // Hide the video container initially
+
+    // Show the requested section
+    document.getElementById(sectionId).style.display = "block";
+
+    // If the video section is displayed, show the video container
+    if (sectionId === 'video') {
+        document.getElementById("videoContainer").style.display = "block"; // Show the video container
+    }
+}
+        
+
+  
+function showTool(toolId) {
+  hideAllTools();
+  
+  const toolElement = document.getElementById(toolId);
+  if (toolElement) {
+    toolElement.style.display = "block";
+  }
+}
+
+function hideAllTools() {
+  const tools = document.querySelectorAll('.tool-container');
+  tools.forEach(tool => {
+    tool.style.display = "none";
+  });
+}
+
+        
+      
+// Budget Calculator
+function calculateBudget() {
+  const incomeElement = document.getElementById("budgetIncome");
+  let income = parseFloat(incomeElement.value);
+
+  if (isNaN(income) || income <= 0) {
+    document.getElementById("summary").innerText = "Please enter a valid after-tax income.";
+    clearBudgetResults();
+    return;
+  }
+
+  const needs = income * 0.50;
+  const wants = income * 0.30;
+  const savings = income * 0.20;
+
+  document.getElementById("needs").innerText = `Needs (50%): $${needs.toFixed(2)}`;
+  document.getElementById("wants").innerText = `Wants (30%): $${wants.toFixed(2)}`;
+  document.getElementById("savings").innerText = `Savings (20%): $${savings.toFixed(2)}`;
+  document.getElementById("summary").innerText = `Based on your after-tax income of $${income.toFixed(2)}, you should aim to allocate around:`;
+}
+
+function clearBudgetResults() {
+  document.getElementById("needs").innerText = "";
+  document.getElementById("wants").innerText = "";
+  document.getElementById("savings").innerText = "";
+  document.getElementById("summary").innerText = "";
+}
+
+// Expense Tracker
+function calculateExpenses() {
+  let total = 0;
+
+  // Necessities
+  total += getExpense("mortgageRentAmount");
+  total += getExpense("utilitiesAmount");
+  total += getExpense("foodDrinkAmount");
+  total += getExpense("clothingAmount");
+  total += getExpense("householdMaintenanceAmount");
+  total += getExpense("carExpensesAmount");
+
+  // Personal
+  total += getExpense("personalExpensesAmount");
+
+  // Other categories
+  total += getExpense("debtsLoansAmount");
+  total += getExpense("insuranceAmount");
+  total += getExpense("taxesAmount");
+  total += getExpense("otherExpensesAmount");
+
+  document.getElementById("totalExpenses").innerText = `Total Expenses: $${total.toFixed(2)}`;
+  
+  let annualCost = total * 12;
+  document.getElementById("expenseResults").innerText = 
+    `Your spending habits summary. Based on your budget, the cost of maintaining your current standard of living is approximately $${annualCost.toFixed(2)} per year.`;
+}
+
+function getExpense(elementId) {
+  let value = parseFloat(document.getElementById(elementId).value);
+  return isNaN(value) ? 0 : value;
+}
+
+// Currency Converter
+const api = "https://api.exchangerate-api.com/v4/latest/USD";
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById("convertBtn")) {
+    document.getElementById("convertBtn").addEventListener("click", convertCurrency);
+  }
+  
+  if (document.getElementById("getStockPrice")) {
+    document.getElementById("getStockPrice").addEventListener("click", getStockPrice);
+  }
+  
+  if (document.getElementById("addInvestmentForm")) {
+    document.getElementById("addInvestmentForm").addEventListener("submit", addInvestment);
+  }
+});
+
+function convertCurrency() {
+  const searchValue = document.getElementById("oamount");
+  const fromCurrency = document.getElementById("sel1");
+  const toCurrency = document.getElementById("sel2");
+  const finalValue = document.querySelector(".finalValue");
+  
+  let amount = parseFloat(searchValue.value);
+  let from = fromCurrency.value;
+  let to = toCurrency.value;
+
+  if (!amount || !from || !to) {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Please enter a valid amount and select currencies.',
+      icon: 'error',
+    });
+    return;
+  }
+
+  fetch(api)
+    .then(response => response.json())
+    .then(data => {
+      let rateFrom = data.rates[from];
+      let rateTo = data.rates[to];
+
+      if (rateFrom && rateTo) {
+        let convertedAmount = (amount * rateTo / rateFrom).toFixed(2);
+        finalValue.innerHTML = convertedAmount;
+        document.getElementById("finalAmount").style.display = "block";
+
+        Swal.fire({
+          title: 'Converted Successfully!',
+          text: `Converted Amount: ${convertedAmount} ${to}`,
+          icon: 'success'
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Unable to retrieve conversion rates.',
+          icon: 'error'
+        });
+      }
+    })
+    .catch(error => {
+      Swal.fire({
+        title: 'Error!',
+        text: 'An error occurred while fetching data.',
+        icon: 'error'
+      });
+    });
+}
+
+function clearVal() {
+  const searchValue = document.getElementById("oamount");
+  const finalValue = document.querySelector(".finalValue");
+  const fromCurrency = document.getElementById("sel1");
+  const toCurrency = document.getElementById("sel2");
+  
+  searchValue.value = "";
+  finalValue.innerHTML = "";
+  document.getElementById("finalAmount").style.display = "none";
+  fromCurrency.selectedIndex = 0;
+  toCurrency.selectedIndex = 0;
+}
+
+// Stock Market Insights
+function getStockPrice() {
+  const stockSymbol = document.getElementById('stockSymbol').value.toUpperCase();
+ 
+  if (!stockSymbol) {
+    alert("Please enter a stock symbol.");
+    return;
+  }
+
+  const apiKey = 'G2SZBWNAKDGQGBZ9';
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${stockSymbol}&interval=5min&apikey=${apiKey}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data['Time Series (5min)']) {
+        const latestTime = Object.keys(data['Time Series (5min)'])[0];
+        const stockData = data['Time Series (5min)'][latestTime];
+
+        const stockName = stockSymbol;
+        const stockPrice = stockData['4. close'];
+        const lastUpdated = latestTime;
+
+        document.getElementById('stockName').textContent = stockName;
+        document.getElementById('stockPrice').textContent = parseFloat(stockPrice).toFixed(2);
+        document.getElementById('lastUpdated').textContent = lastUpdated;
+      } else {
+        alert("Invalid stock symbol or data not available.");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("There was an error fetching the stock data.");
+    });
+}
+
+// Investment Portfolio Tracker
+function displayPortfolio() {
+  const tableBody = document.getElementById('portfolioTable');
+  if (!tableBody) return;
+  
+  tableBody.innerHTML = '';
+
+  portfolio.forEach(item => {
+    const value = item.quantity * item.currentPrice;
+    const cost = item.quantity * item.buyPrice;
+    const profit = value - cost;
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td>${item.asset}</td>
+      <td>${item.quantity}</td>
+      <td>$${item.buyPrice.toFixed(2)}</td>
+      <td>$${item.currentPrice.toFixed(2)}</td>
+      <td>$${value.toFixed(2)}</td>
+      <td class="${profit >= 0 ? 'profit' : 'loss'}">
+        $${profit.toFixed(2)}
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+}
+
+function addInvestment(e) {
+  e.preventDefault();
+
+  const asset = document.getElementById('asset').value;
+  const quantity = parseFloat(document.getElementById('quantity').value);
+  const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+
+  portfolio.push({ asset, quantity, buyPrice, currentPrice: buyPrice });
+
+  document.getElementById('asset').value = '';
+  document.getElementById('quantity').value = '';
+  document.getElementById('buyPrice').value = '';
+
+  displayPortfolio();
+}
+
+// Financial Goal Planner
+function setFinancialGoal() {
+  let goal = document.getElementById("goal").value;
+  let goalAmount = document.getElementById("goalAmount").value;
+  
+  if (!goal || !goalAmount) {
+    Swal.fire({
+      title: 'Error!',
+      text: 'Please enter both a goal and amount.',
+      icon: 'error'
+    });
+    return;
+  }
+  
+  document.getElementById("goalStatus").innerText = `Goal set: ${goal} of $${goalAmount}`;
+  
+  Swal.fire({
+    title: 'Goal Set!',
+    text: `Your financial goal has been set: ${goal} of $${goalAmount}`,
+    icon: 'success'
+  });
+}
+
+        
+
+
+
+        
+
+        function openModal() {
+            document.getElementById("loginModal").style.display = "block";
+            document.getElementById("username").value = ""; // Clear username field upon opening modal
+            document.getElementById("password").value = ""; // Clear password field upon opening modal
+        }
+
+        function closeModal() {
+            document.getElementById("loginModal").style.display = "none";
+        }
+
+        function openPasswordRecovery() {
+            closeModal();
+            document.getElementById("passwordRecoveryModal").style.display = "block";
+        }
+
+        function closePasswordRecoveryModal() {
+            document.getElementById("passwordRecoveryModal").style.display = "none";
+            openModal(); 
+        }
+
+        function sendPasswordReset() {
+            const email = document.getElementById("recoveryEmail").value;
+            Swal.fire({
+                title: 'Reset Link Sent!',
+                text: `If ${email} is registered, you will receive a password reset link.`,
+                icon: 'success'
+            }).then(() => {
+                closePasswordRecoveryModal();
+            });
+        }
+
+        function showLoginModal() {
+            closeResetPasswordModal();
+            openModal();
+        }
+
+        function openResetPasswordModal() {
+            document.getElementById("resetPasswordModal").style.display = "block";
+        }
+
+        function closeResetPasswordModal() {
+            document.getElementById("resetPasswordModal").style.display = "none";
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Passwords do not match.',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Logic for password reset in real application needed here
+            
+            Swal.fire({
+                title: 'Password Reset Successful!',
+                text: 'You can now log in with your new password.',
+                icon: 'success'
+            }).then(() => {
+                closeResetPasswordModal();
+                openModal(); 
+            });
+        }
+
+        function loginUser() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;  // Get the password
+
+            if (username && password) {
+                // Save username and email in localStorage
+                localStorage.setItem("username", username);
+                localStorage.setItem("email", "user@example.com"); // Mock email storage
+                
+                Swal.fire({
+                    title: 'Login Successful!',
+                    text: `Welcome back, ${username}!`,
+                    icon: 'success'
+                }).then(() => {
+                    document.getElementById("user-name").innerText = username;
+                    document.getElementById("user-name").style.display = "inline";
+                    document.getElementById("login-button").style.display = "none";
+                    document.getElementById("sign-out-button").style.display = "inline"; 
+                    closeModal();
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please enter both username and password.',
+                    icon: 'error'
+                });
+            }
+        }
+
+       
+
+        function signOut() {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You will be logged out!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, log out!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("email");
+                    
+                    document.getElementById("user-name").innerText = '';
+                    document.getElementById("user-name").style.display = "none";
+                    document.getElementById("login-button").style.display = "inline";
+                    document.getElementById("sign-out-button").style.display = "none"; 
+                    
+                    Swal.fire({
+                        title: "Logged Out!",
+                        text: "You have been logged out successfully.",
+                        icon: "success"
+                    });
+                }
+            });
+        }
+
+        function updateProfile() {
+            const username = document.getElementById("profile-username").value;
+            const email = document.getElementById("profile-email").value;
+            const newPassword = document.getElementById("profile-password").value;
+
+            if (username && email) {
+                localStorage.setItem("username", username);
+                localStorage.setItem("email", email);
+                
+                if (newPassword) {
+                    // Logic for password change would go here
+                }
+
+                Swal.fire({
+                    title: 'Profile Updated!',
+                    text: 'Your profile information has been updated successfully.',
+                    icon: 'success'
+                }).then(() => {
+                    closeProfileManagement();
+                    document.getElementById("user-name").innerText = username;
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please fill in all required fields.',
+                    icon: 'error'
+                });
+            }
+        }
+
+        function closeProfileManagement() {
+            document.getElementById("profileManagement").style.display = "none";
+        }
+
+        function openProfileManagement() {
+            document.getElementById("profileManagement").style.display = "block";
+        }
+
+        (function(){
+    if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+        window.chatbase = (...arguments) => {
+            if(!window.chatbase.q){ window.chatbase.q = []; }
+            window.chatbase.q.push(arguments);
+        };
+        window.chatbase = new Proxy(window.chatbase, {
+            get(target, prop){
+                if(prop === "q") { return target.q; }
+                return (...args) => target(prop, ...args);
+            }
+        });
+    }
+    const onLoad = function() {
+        const script = document.createElement("script");
+        script.src = "https://www.chatbase.co/embed.min.js";
+        script.id = "qavBhByEo_AP1AXaAp1Yk";
+        script.domain = "www.chatbase.co";
+        document.body.appendChild(script);
+    };
+    if(document.readyState === "complete") {
+        onLoad();
+    } else {
+        window.addEventListener("load", onLoad);
+    }
+})();
+
+    </script>
+</body>
+</html>
