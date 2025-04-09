@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +13,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
     body {
-        font-family: Helvetica, sans-serif, ;
+        font-family: "Lucida Console", "Courier New", monospace;
         margin: 0;
         padding: 0;
         transition: background-color 0.3s, color 0.3s;
@@ -26,20 +25,9 @@
         height: 100%;
         width: 100%;
     }
-    
-    .theme-light {
-        --color-primary: #0060df;
-        --color-secondary: #fbfbfe;
-        --color-accent: #fd6f53;
-        --font-color: #000000;
-    }
-    
-    .theme-dark {
-        --color-primary: #17ed90;
-        --color-secondary: #2a2c2d;
-        --color-accent: #12cdea;
-        --font-color: #ffffff;
-    }
+
+
+
     
     .container {
         display: flex;
@@ -140,6 +128,23 @@
         text-align: center;
         position: relative;
     }
+
+    :root {
+  --bg-color: white;
+  --text-color: black;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #ff0000;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+
+}
     
     nav ul {
         list-style: none;
@@ -363,6 +368,7 @@
     .loss {
         color: red;
     }
+
     </style>
 </head>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -444,24 +450,23 @@
             <p><a href="#" onclick="showLoginModal()">Back to Login</a></p>
         </div>
     </div>
-
     <div id="profileManagement" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeProfileManagement()">&times;</span>
+            <span class="close" onclick="closeProfileManagement()">×</span>
             <h2>User Profile</h2>
             <input type="text" id="profile-username" placeholder="Username">
             <input type="email" id="profile-email" placeholder="Email">
             <input type="password" id="profile-password" placeholder="New Password (Leave blank to keep current)">
             <p class="preview"></p>
             <button onclick="updateProfile()">Update Profile</button>
-            
             <h3>Theme Switcher</h3>
-            <label id="switch" class="switch">
-                <input type="checkbox" onchange="toggleTheme()" id="slider">
+            <label class="switch">
+                <input type="checkbox" id="slider" onchange="toggleTheme()">
                 <span class="slider round"></span>
             </label>
+            <button id="theme-toggle" onclick="toggleTheme()">Switch Theme</button>
         </div>
-    </div>
+    </div> <!-- Missing here -->
 
     <section id="home">
         <h2>Your Personal Finance Buddy</h2>
@@ -776,32 +781,13 @@ function updateChart(labels, data) {
 updateDashboard();
 
 
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "light" ? "dark" : "light";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+}
 
- // function to set a given theme/color-scheme
- function setTheme(themeName) {
-            localStorage.setItem('theme', themeName);
-            document.documentElement.className = themeName;
-        }
-
-        // function to toggle between light and dark theme
-        function toggleTheme() {
-            if (localStorage.getItem('theme') === 'theme-dark') {
-                setTheme('theme-light');
-            } else {
-                setTheme('theme-dark');
-            }
-        }
-
-        // Immediately invoked function to set the theme on initial load
-        (function () {
-            if (localStorage.getItem('theme') === 'theme-dark') {
-                setTheme('theme-dark');
-                document.getElementById('slider').checked = false;
-            } else {
-                setTheme('theme-light');
-              document.getElementById('slider').checked = true;
-            }
-        })();
 
 
 // Place this in your existing JavaScript code
