@@ -1287,7 +1287,7 @@ function displayPortfolio() {
 
   tableBody.innerHTML = '';
 
-  portfolio.forEach(item => {
+  portfolio.forEach((item, index) => {
     const value = item.quantity * item.currentPrice;
     const cost = item.quantity * item.buyPrice;
     const profit = value - cost;
@@ -1297,7 +1297,12 @@ function displayPortfolio() {
       <td>${item.asset}</td>
       <td>${item.quantity}</td>
       <td>$${item.buyPrice.toFixed(2)}</td>
-      <td>$${item.currentPrice.toFixed(2)}</td>
+      <td>
+        $${item.currentPrice.toFixed(2)}
+        <br>
+        <input type="number" id="newPrice-${index}" placeholder="Update price" style="width: 100px; margin-top: 5px;" />
+        <button onclick="updatePrice(${index})">Update</button>
+      </td>
       <td>$${value.toFixed(2)}</td>
       <td class="${profit >= 0 ? 'profit' : 'loss'}">$${profit.toFixed(2)}</td>
     `;
@@ -1314,7 +1319,12 @@ function addInvestment(e) {
 
   if (!asset || isNaN(quantity) || isNaN(buyPrice)) return;
 
-  portfolio.push({ asset, quantity, buyPrice, currentPrice: buyPrice });
+  portfolio.push({
+    asset,
+    quantity,
+    buyPrice,
+    currentPrice: buyPrice
+  });
 
   document.getElementById('asset').value = '';
   document.getElementById('quantity').value = '';
@@ -1323,7 +1333,18 @@ function addInvestment(e) {
   displayPortfolio();
 }
 
+function updatePrice(index) {
+  const input = document.getElementById(`newPrice-${index}`);
+  const newPrice = parseFloat(input.value);
+
+  if (!isNaN(newPrice) && newPrice >= 0) {
+    portfolio[index].currentPrice = newPrice;
+    displayPortfolio();
+  }
+}
+
 document.getElementById('investmentForm').addEventListener('submit', addInvestment);
+
 
 
 
