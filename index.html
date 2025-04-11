@@ -1279,30 +1279,28 @@ function getStockPrice() {
     });
 }
 
-// Investment Portfolio Tracker
+let portfolio = [];
+
 function displayPortfolio() {
   const tableBody = document.getElementById('portfolioTable');
   if (!tableBody) return;
-  
+
   tableBody.innerHTML = '';
 
   portfolio.forEach(item => {
     const value = item.quantity * item.currentPrice;
     const cost = item.quantity * item.buyPrice;
     const profit = value - cost;
-    const row = document.createElement('tr');
 
+    const row = document.createElement('tr');
     row.innerHTML = `
       <td>${item.asset}</td>
       <td>${item.quantity}</td>
       <td>$${item.buyPrice.toFixed(2)}</td>
       <td>$${item.currentPrice.toFixed(2)}</td>
       <td>$${value.toFixed(2)}</td>
-      <td class="${profit >= 0 ? 'profit' : 'loss'}">
-        $${profit.toFixed(2)}
-      </td>
+      <td class="${profit >= 0 ? 'profit' : 'loss'}">$${profit.toFixed(2)}</td>
     `;
-
     tableBody.appendChild(row);
   });
 }
@@ -1314,6 +1312,8 @@ function addInvestment(e) {
   const quantity = parseFloat(document.getElementById('quantity').value);
   const buyPrice = parseFloat(document.getElementById('buyPrice').value);
 
+  if (!asset || isNaN(quantity) || isNaN(buyPrice)) return;
+
   portfolio.push({ asset, quantity, buyPrice, currentPrice: buyPrice });
 
   document.getElementById('asset').value = '';
@@ -1322,6 +1322,10 @@ function addInvestment(e) {
 
   displayPortfolio();
 }
+
+document.getElementById('investmentForm').addEventListener('submit', addInvestment);
+
+
 
 // Financial Goal Planner
 function setFinancialGoal() {
