@@ -839,36 +839,36 @@ function updateUI() {
 
 
 // Update the loginUser function
-function loginUser() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+// function loginUser() {
+//     const username = document.getElementById("username").value;
+//     const password = document.getElementById("password").value;
 
-    if (username && password) {
-        localStorage.setItem("username", username);
-        // In a real application, validate credentials here
+//     if (username && password) {
+//         localStorage.setItem("username", username);
+//         // In a real application, validate credentials here
 
-        Swal.fire({
-            title: 'Login Successful!',
-            text: `Welcome back, ${username}!`,
-            icon: 'success'
-        }).then(() => {
-            loggedIn = true; // Update logged-in state
-            updateUI(); // Update UI
+//         Swal.fire({
+//             title: 'Login Successful!',
+//             text: `Welcome back, ${username}!`,
+//             icon: 'success'
+//         }).then(() => {
+//             loggedIn = true; // Update logged-in state
+//             updateUI(); // Update UI
 
-            // Hiding the sign-up button
-            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+//             // Hiding the sign-up button
+//             document.getElementById("signup-button").style.display = "none"; // Hide sign up button
             
-            closeModal();
-            showSection('home'); // Optionally redirect to home
-        });
-    } else {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please enter both username and password.',
-            icon: 'error'
-        });
-    }
-}
+//             closeModal();
+//             showSection('home'); // Optionally redirect to home
+//         });
+//     } else {
+//         Swal.fire({
+//             title: 'Error!',
+//             text: 'Please enter both username and password.',
+//             icon: 'error'
+//         });
+//     }
+ //}
 
 
        
