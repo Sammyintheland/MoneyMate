@@ -931,8 +931,8 @@ function loginUser() {
             document.getElementById("user-name").innerText = username;
             document.getElementById("user-name").style.display = "inline";
             document.getElementById("login-button").style.display = "none"; // Hide login button
-            document.getElementById("signup-button").style.display = "none"; // Hide sign up button
-            document.getElementById("sign-out-button").style.display = "none"; // Show sign-out button
+             document.getElementById("signup-button").style.display = "none"; // Hide sign up button
+            document.getElementById("sign-out-button").style.display = "inline"; // Show sign-out button
             
             closeModal(); // Close the login modal
             showSection('home'); // Redirect to home or any other section
@@ -1495,6 +1495,7 @@ function setFinancialGoal() {
                     document.getElementById("user-name").style.display = "none";
                     document.getElementById("login-button").style.display = "inline";
                     document.getElementById("sign-out-button").style.display = "none"; 
+                    document.getElementById("signup-button").style.display = "inline";
                     
                     Swal.fire({
                         title: "Logged Out!",
